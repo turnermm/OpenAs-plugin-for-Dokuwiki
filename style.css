@@ -1,0 +1,10 @@
+div.save_as {
+ color:black;
+ background-color:yellow;
+ width: 300px;
+ height: 80px;
+ text-align: center;
+ border: solid 1px red;
+ padding: 10px;
+ margin: auto;
+}

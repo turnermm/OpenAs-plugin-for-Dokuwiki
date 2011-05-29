@@ -1,0 +1,8 @@
+base openas
+author Myron Turner
+email turnermm02@shaw.ca
+date 2011-05-29
+name OpenAs Plugin
+desc File utility for renaming and saving-as, and creating new pages from templates
+url http://www.dokuwiki.org/plugin:openas
+
