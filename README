@@ -13,7 +13,9 @@ The SaveAS form will create a new page from the old page but leave the old page 
 
 The MoveTO form will creat a new page from the old page and delete the old page.  However,
 it will not delete the old page unless it is certain that the new page is in place, so that
-there is no danger of losing the old page.
+there is no danger of losing the old page. MoveTO does not currently accommodate backlinks,
+so that pages which link to the deleted page will have to be updated manually.  Some
+form of accommodation may eventually be implemented. 
 
 The OpenAS form requires the newpagetemplate plugin.  The will open the page 'newname',
 using the specified template.   The current implementation of the OpenAS plugin
@@ -23,7 +25,7 @@ on the newpagetemplate plugin page on Dokuiwiki.  Here is a sample:
 
    ~~OpenAS>hello_temp#homepagetemplate>@HI@,HOWDY!;@BYE@,Good Bye~~
 
-The will open up the page :hello_temp, using the homepagetemplate (which is
+This will open up the page :hello_temp, using the homepagetemplate (which is
 :pagetemplates:homepagetemplate) and it will fill in any of the substitution variables
 defined on the newpagetemplate plugin page, as well as the variables defined
 by newpagevar(which in this example are: @HI@ and @BYE).
