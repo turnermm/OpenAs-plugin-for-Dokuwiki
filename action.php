@@ -26,7 +26,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
             'email'  => 'pierre.spring@liip.ch',
             'date'   => '2007-Mai-08',
             'name'   => 'fckg_delete',
-            'desc'   => 'Delete Plugin for the Dokuwiki FCKW Plugin',
+            'desc'   => 'Action Plugin for the openas Plugin',
             'url'    => 'https://fosswiki.liip.ch/display/FCKW/Home');
     }
 
