@@ -39,18 +39,21 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
     function handle($match, $state, $pos, &$handler) {
          global $ID;
          $actions = array('SaveAS' => 'save', 'MoveTO' => 'delete');
+         $which = array('SaveAS'=>'saved as', 'MoveTO' => 'renamed');
          $file = wikiFN($ID);
          list($type,$name,$newpagevars) = explode('>',(trim($match,'~')));
-           
-               
+         $name=trim($name);  
+         if($name[0] != ':') $name = ":$name";
+
          if($type == 'SaveAS' || $type == 'MoveTO') {
            $action = $actions[$type];
            $newfile = wikiFN($name);           
            $contents = file_get_contents($file);
            $contents = preg_replace('/~~' . $type .'.*?~~/',"",$contents,1);
            io_saveFile($newfile,$contents);   
-           $wikilink = html_wikilink("$name?saveas_orig=$ID&openas=$action");     
-           $match = "Click on this link to open your renamed page:<br /> $wikilink";  
+           $wikilink = html_wikilink("$name?saveas_orig=$ID&openas=$action");   
+           $msg = "$ID has been $which[$type] $name.<br />";  
+           $match = "$msg Click on this link to open:<br /> $wikilink";  
          }
          else if($type == 'OpenAS') {
            list($id,$template) = explode('#',$name);
