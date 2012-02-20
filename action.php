@@ -11,11 +11,14 @@ require_once(DOKU_PLUGIN.'action.php');
 class action_plugin_openas extends DokuWiki_Action_Plugin {
          
       private $ext = '.txt';
+	  private $locks_set=false;
+	  private $locked_fn;
     /**
      * Constructor
      */
     function __construct() {
-	  $this->ext = '.dbg.txt';    	
+	    // $this->ext = '.dbg.txt';    	
+	     $this->locked_fn = $this->metaFilePath('locks','ser',false);
 	}
 	
     function getInfo() {
@@ -30,6 +33,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 
     function register(&$controller) {
         $controller->register_hook('DOKUWIKI_STARTED', 'BEFORE', $this, 'openas_preprocess');
+		$controller->register_hook('DOKUWIKI_DONE', 'BEFORE', $this, 'update_locked_pages');
     }
 
 	
@@ -46,7 +50,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
                   $this->update_relative_links($_REQUEST['id'],$_REQUEST['saveas_orig']) ;			  
 			      $this->get_backs($_REQUEST['id'],$_REQUEST['saveas_orig']) ;
                   $file = wikiFN($_REQUEST['saveas_orig']); 
-                  if(file_exists($file)) @unlink($file);
+                  if(file_exists($file)&&!$this->locks_set) @unlink($file);
               }
         }
 
@@ -55,8 +59,26 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 
 	function  get_backs($id,$orig) {		     
 		$backlinks = ft_backlinks($orig);
-		 foreach($backlinks as $link) {		    
+		
+		 foreach($backlinks as $backlink) {	
+			if(!checklock($backlink)) {
+			lock($backlink);   
+			}		 
+		}
+		
+		$locked_array=$this->get_locked_array() ;
+         $locks_found = false;  
+		 foreach($backlinks as $link) {	
+			if(checklock($link)) {
+			   $this->locks_set = true;  
+			   $locked_array[$link] = array($id,$orig);			   
+			   continue;
+			}		 			
 			$this->resolve_ids($id,$orig,$link);
+		    unlock($link);
+		}
+		if($this->locks_set) {
+		    io_saveFile($this->locked_fn,serialize($locked_array));
 		}
 	}		
 	
@@ -76,8 +98,8 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 		$openas_debug = $this;
         $current_wikifn=wikiFN($new_id);
 		$data = io_readFile($current_wikifn);
-		$metafn=$this->metaFilePath($orig_id);
-		 $this->write_debug($metafn);
+		$metafn=$this->metaFilePath($orig_id,'orig');
+	
 		io_saveFile($metafn,$data);	
 
 	    $data = preg_replace_callback('/\[\[(\..*?)\]\]/', 
@@ -154,7 +176,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 		}
 		$data = io_readFile($current_wikifn);
         $metafn = $this->metaFilePath($curid);
-		 $this->write_debug($metafn);
+		
 		io_saveFile($metafn,$data);	
 		
 	    $data = preg_replace_callback('/\[\[(.*?)\]\]/', "openas_check_pageid",$data);
@@ -165,13 +187,62 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 		io_saveFile($path,$data);	
 	}
   
-  function metaFilePath($current_id) {
-       $namespace = 'openas:' . $current_id;	
-	   $metafn = metaFN($namespace,'.mvd');
+  function metaFilePath($current_id, $ext='mvd', $numbered=true) {
+    $namespace = 'openas:' . $current_id;	
+	
+	if($numbered) {
+	    for($i=1; ; $i++) {		     
+		    $metafnn = metaFN($namespace,  '.' . "$i.$ext");			
+			if(!@file_exists($metafnn)) {
+			    return $metafnn;
+			}		
+        }
+	}
+	
+      $metafn = metaFN($namespace,  '.' . $ext);	
 	   return $metafn;
   }
+
+  /**
+   		 $orig_id: deleted page 
+		 $new_id: page to which $orig_id is being moved
+		 $curid: the page which is being currently being updated as determined
+		            from the backlinks array 
+
+ */  
+  function save_locked($new_id,$orig_id,$back_link) {
+      $this->locked_array[$back_link] = array($new_id,$orig_id);
+  }
   
-  function write_debug($what) {   
+  function get_locked_array() {
+	 if(@file_exists($this->locked_fn)) {	         
+		  return unserialize(io_readFile($this->locked_fn,false));
+	 }
+	 
+	 return array();
+  }
+  
+  function update_locked_pages(&$event) {
+     global $ID;
+	 $locked_array=$this->get_locked_array() ;
+	
+	 if(isset($locked_array[$ID])) {
+	    //  $this->ext = '.locked2.txt'; 
+		  $new_id = $locked_array[$ID][0];
+		  $orig_id = $locked_array[$ID][1];
+		  $this->resolve_ids($new_id, $orig_id, $ID);
+	 }
+	 unset($locked_array[$ID]);
+	 io_saveFile($this->locked_fn,serialize($locked_array));
+	 if(empty($locked_array)) {
+         $file = wikiFN($orig_id); 
+         if(file_exists($file)) @unlink($file);
+	  }
+	 
+  }
+  
+  function write_debug($what) {  
+     return;  
      $handle = fopen("openas.txt", "a");
      if(is_array($what)) $what = print_r($what,true);
      fwrite($handle,"$what\n");
