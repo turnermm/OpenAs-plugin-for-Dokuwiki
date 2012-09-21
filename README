@@ -11,11 +11,16 @@ newname can be a namespace:pagename
 
 The SaveAS form will create a new page from the old page but leave the old page in tact.
 
-The MoveTO form will creat a new page from the old page and delete the old page.  However,
+The MoveTO form will create a new page from the old page and delete the old page.  However,
 it will not delete the old page unless it is certain that the new page is in place, so that
-there is no danger of losing the old page. MoveTO does not currently accommodate backlinks,
-so that pages which link to the deleted page will have to be updated manually.  Some
-form of accommodation may eventually be implemented. 
+there is no danger of losing the old page.
+
+In this version all backlinks to the page being moved are updated to the page id of the new page.
+
+The plugin takes into consideration page locking. So, if a page with backlinks is currently in use,
+it is not updated until the user with the lock exits the page. The original page remains in place until 
+all of the pages with backlinks have been updated. Once all backlinks have been updated,
+he original page is removed. 
 
 The OpenAS form requires the newpagetemplate plugin.  The will open the page 'newname',
 using the specified template.   The current implementation of the OpenAS plugin
