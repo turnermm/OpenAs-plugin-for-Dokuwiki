@@ -17,7 +17,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
      * Constructor
      */
     function __construct() {
-	    // $this->ext = '.dbg.txt';    	
+	    
 	     $this->locked_fn = $this->metaFilePath('locks','ser',false);
 	}
 	
@@ -42,10 +42,10 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	    $_REQUEST['id']: name of the new page
 	*/
     function openas_preprocess(&$event){
-	   global $ID;
+	   global $INFO;
 	 
         if(isset($_REQUEST['openas']) && $_REQUEST['openas'] == 'delete') {
-              $new_file = wikiFN($_REQUEST['id']); 			
+              $new_file = wikiFN($INFO['id']); 
               if(file_exists($new_file)) {			  
                   $this->update_relative_links($_REQUEST['id'],$_REQUEST['saveas_orig']) ;			  
 			      $this->get_backs($_REQUEST['id'],$_REQUEST['saveas_orig']) ;
@@ -241,10 +241,13 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	 
   }
   
-  function write_debug($what) {  
-     return;  
-     $handle = fopen("openas.txt", "a");
+  function write_debug($what,$pre=false) {  
      if(is_array($what)) $what = print_r($what,true);
+     if($pre) {
+        msg('<pre>' . $what . '</pre>');
+     return;  
+     }   
+     $handle = fopen("openas.txt", "a");
      fwrite($handle,"$what\n");
      fclose($handle);
   }
