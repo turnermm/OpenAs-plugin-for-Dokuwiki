@@ -102,7 +102,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	
 		io_saveFile($metafn,$data);	
 
-	    $data = preg_replace_callback('/\[\[(\..*?)\]\]/', 
+	    $data = preg_replace_callback('/\[\[(.*?)\]\]/', 
 		     create_function(
 			   '$matches',
 			   'global $openas_debug,$orig_namespace;		              			   
@@ -111,7 +111,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 			   $link_text = isset($link_array[1]) ? $link_array[1] : "";  
 			   resolve_pageid($orig_namespace,$c_link,$c_exists);
 			   if($c_exists) {
-				   return "[[$c_link|$link_text]]";
+				   return "[[:$c_link|$link_text]]";
 			   }
 			   return $matches[0];'
 		     )	,
