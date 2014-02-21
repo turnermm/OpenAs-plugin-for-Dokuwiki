@@ -38,20 +38,23 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 
 	
 	/**
-	    $_REQUEST['saveas_orig']: id of the original page which is being moved to a new name
-	    $_REQUEST['id']: name of the new page
+	    $_REQUEST['saveas_orig']: id of the original page which will be moved or copied to a new name
+	    $_REQUEST['id'] or $INFO['id']: name of the new page
 	*/
     function openas_preprocess(&$event){
 	   global $INFO;
 	 
-        if(isset($_REQUEST['openas']) && $_REQUEST['openas'] == 'delete') {
+         if(isset($_REQUEST['openas'])) {
               $new_file = wikiFN($INFO['id']); 
-              if(file_exists($new_file)) {			  
+            if(file_exists($new_file) && isset($_REQUEST['saveas_orig'])) {	
+                 // handle relative links for both save and move		  
                   $this->update_relative_links($_REQUEST['id'],$_REQUEST['saveas_orig']) ;			  
+                if($_REQUEST['openas'] == 'delete') {   
 			      $this->get_backs($_REQUEST['id'],$_REQUEST['saveas_orig']) ;
                   $file = wikiFN($_REQUEST['saveas_orig']); 
                   if(file_exists($file)&&!$this->locks_set) @unlink($file);
               }
+        }
         }
 
 
