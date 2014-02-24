@@ -1,10 +1,14 @@
 div.save_as {
  color:black;
- background-color:yellow;
  width: 300px;
  height: 80px;
  text-align: center;
- border: solid 1px red;
+ border: solid 1px #eeb;
  padding: 10px;
  margin: auto;
+ background-color: #ffc;
+ background-repeat: no-repeat;
+ background-position: 8px 50%;
+ background-image: url(../../images/notify.png);  
+ border-radius: 5px;
 }
