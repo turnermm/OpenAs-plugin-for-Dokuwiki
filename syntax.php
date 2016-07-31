@@ -36,7 +36,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern('~~MoveTO>.*?~~',$mode,'plugin_openas');
     }
 
-    function handle($match, $state, $pos, &$handler) {
+    function handle($match, $state, $pos, Doku_Handler $handler) {
          global $ID;
          $actions = array('SaveAS' => 'save', 'MoveTO' => 'delete');
          $which = array('SaveAS'=>'saved as', 'MoveTO' => 'renamed');
@@ -65,7 +65,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
          return array($state,$match);
     }
 
-    function render($mode, &$renderer, $data) {
+    function render($mode, Doku_Renderer $renderer, $data) {
         list($state,$match) = $data;
        
         if($mode == 'xhtml'){
