@@ -1,4 +1,4 @@
-div.save_as {
+div.save_as, div.save_as_tmpl {
  color:black;
  width: 300px;
  height: 80px;
@@ -11,4 +11,8 @@ div.save_as {
  background-position: 8px 50%;
  background-image: url(../../images/notify.png);  
  border-radius: 5px;
+}
+div.save_as_info {
+    padding:10px;
+ 
 }

@@ -69,7 +69,14 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
         list($state,$match) = $data;
        
         if($mode == 'xhtml'){
-            $renderer->doc .= '<div class="save_as">' . $match . '</div>';
+            $class= 'save_as'; 
+            if(preg_match("/newpagetemplate/",$match)){
+                 $renderer->doc .= '<div class="save_as_info">' . "\n";
+                 $renderer->doc .= '<form id="save_as_info">page id: <input type="text" size="24" name="save_as_page" id ="save_as_page">' . "\n";
+                 $renderer->doc .= "</form></div>\n";
+                 $class ='save_as_tmpl';
+            }
+            $renderer->doc .= '<div class="'. $class .'">' . $match . '</div>';
             return true;
         }
         return false;
