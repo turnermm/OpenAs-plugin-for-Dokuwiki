@@ -52,13 +52,13 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
            $contents = preg_replace('/~~' . $type .'.*?~~/',"",$contents,1);
            io_saveFile($newfile,$contents);   
            $wikilink = html_wikilink("$name?saveas_orig=$ID&openas=$action");   
-           $msg = "$ID has been $which[$type] $name.<br />";  
-           $match = "$msg Click on this link to open:<br /> $wikilink";  
+           $msg = "$ID " . $this->getLang('will_save') .   $which[$type] ."  $name.<br />";  
+           $match = $msg  .  $this->getLang('open_wl') . "<br /> $wikilink";  
          }
          else if($type == 'OpenAS') {
            list($id,$template) = explode('#',$name);
            $newpagevars = urlencode($newpagevars); 
-           $match = 'Click on this link to open your page:<br />' .
+           $match = $this->getLang('open_page'). '<br />' .
              html_wikilink("$id?do=edit&rev=&newpagetemplate=:pagetemplates:$template&newpagevars=$newpagevars");     
          }
          
