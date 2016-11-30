@@ -13,11 +13,19 @@ jQuery(document).ready(function(){
       href = href.replace(/SAVEAS_PAGE/i, id);
       jq.attr("href",href);  //   (jQuery("div.save_as_tmpl a.wikilink2").attr("href",href));
      }
-
+     var repl_str = "";
     jQuery( "input.open_as_repl" ).each( function( index, element ){
-         alert(this.id + "=" +   this.value  );
+          if(this.value) {              
+              repl_str += '@' + this.id + '@,' + this.value + ';'
+            }
     });
      
+        if((href.match(/newpagevars=%40/) || href.match(/newpagevars=\s*$/)) && repl_str) {            
+            href += '%3B' + encodeURIComponent(repl_str);
+            href = href.replace(/%20/g,'+');           
+            jq.attr("href",href);              
+        }
+            
     });
     
 
