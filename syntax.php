@@ -81,7 +81,10 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_ENTER : 
                     $renderer->doc .= '<div id="openasrepl" class="openasrepl"><form id="open_as_var">' ."\n";
                     break;
-            case DOKU_LEXER_UNMATCHED :   $renderer->doc .=  $renderer->_xmlEntities($match);
+            case DOKU_LEXER_UNMATCHED :  
+                   $text = $renderer->_xmlEntities($match);
+                   $text = preg_replace ("#\s*\\\\\s*#",'<br />',$text);              
+                   $renderer->doc .=  $text; 
             break;
             case DOKU_LEXER_MATCHED :
                $renderer->doc .= "<input type='text' size='24' name= '$match'  id ='$match' class='open_as_repl'>&nbsp;\n";
