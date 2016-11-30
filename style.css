@@ -13,6 +13,12 @@ div.save_as, div.save_as_tmpl {
  border-radius: 5px;
 }
 div.save_as_info {
+   // width: 100px; height: 100px;
+    text-align: center;
     padding:10px;
+    margin: auto;
  
+}
+div.openasrepl {
+    padding: 10px;
 }

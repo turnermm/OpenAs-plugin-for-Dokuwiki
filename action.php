@@ -21,16 +21,6 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	     $this->locked_fn = $this->metaFilePath('locks','ser',false);
 	}
 	
-    function getInfo() {
-        return array(
-            'author' => 'Myron Turner',
-            'email'  => 'turnermm02@shaw.ca',
-            'date'   => '2011-05-28',
-            'name'   => 'openas',
-            'desc'   => 'Action Plugin for the openas Plugin',
-            'url'    => 'http://www.dokuwiki.org/plugin:openas');
-    }
-
     function register(Doku_Event_Handler $controller) {
         $controller->register_hook('DOKUWIKI_STARTED', 'BEFORE', $this, 'openas_preprocess');
 		$controller->register_hook('DOKUWIKI_DONE', 'BEFORE', $this, 'update_locked_pages');

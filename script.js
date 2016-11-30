@@ -13,5 +13,13 @@ jQuery(document).ready(function(){
       href = href.replace(/SAVEAS_PAGE/i, id);
       jq.attr("href",href);  //   (jQuery("div.save_as_tmpl a.wikilink2").attr("href",href));
      }
+
+    jQuery( "input.open_as_repl" ).each( function( index, element ){
+         alert(this.id + "=" +   this.value  );
     });
+     
+    });
+    
+
+    
 });
