@@ -84,7 +84,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_UNMATCHED :   $renderer->doc .=  $renderer->_xmlEntities($match);
             break;
             case DOKU_LEXER_MATCHED :
-               $renderer->doc .= "<input type='text size='24' name= '$match'  id ='$match' class='open_as_repl'>&nbsp;\n";
+               $renderer->doc .= "<input type='text' size='24' name= '$match'  id ='$match' class='open_as_repl'>&nbsp;\n";
                break;
             case DOKU_LEXER_EXIT :  $renderer->doc .= '</form></div>' . "\n";
                    break;
