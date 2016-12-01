@@ -9,7 +9,7 @@ jQuery(document).ready(function(){
           alert("You have left the page id blank.")
           return false;
       }  
-         else {
+    else {
       href = href.replace(/SAVEAS_PAGE/i, id);
       jq.attr("href",href);  //   (jQuery("div.save_as_tmpl a.wikilink2").attr("href",href));
      }

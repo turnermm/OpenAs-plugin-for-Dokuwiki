@@ -94,8 +94,9 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_SPECIAL :            
             $class= 'save_as'; 
                 if(preg_match("/SAVEAS_PAGE/i",$match)) {
+                     $id = $this->getLang('pageid');
                  $renderer->doc .= '<div class="save_as_info">' . "\n";
-                 $renderer->doc .= '<form id="save_as_info">page id: <input type="text" size="24" name="save_as_page" id ="save_as_page">' . "\n";
+                     $renderer->doc .= '<form id="save_as_info">' . $id . ' <input type="text" size="24" name="save_as_page" id ="save_as_page">' . "\n";
                  $renderer->doc .= "</form></div>\n";
                  $class ='save_as_tmpl';
             }
