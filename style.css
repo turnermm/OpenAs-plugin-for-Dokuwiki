@@ -22,4 +22,6 @@ div.save_as_info {
 div.openasrepl {
      line-height: 150%;
     padding: 10px;
+    margin:auto;
+    text-align:center;
 }
