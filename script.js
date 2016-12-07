@@ -6,7 +6,7 @@ jQuery(document).ready(function(){
        var href = jq.attr('href');    
       var id = jQuery("#save_as_info input[name=save_as_page]").val() ;
       if(!id)   {
-          alert("You have left the page id blank.")
+          alert("You have left the page id blank.");
           return false;
       }  
     else {
