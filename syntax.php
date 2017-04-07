@@ -67,7 +67,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
            list($id,$template) = explode('#',$name);
            $newpagevars = urlencode($newpagevars); 
            $match = $this->getLang('open_page'). '<br />' .
-             html_wikilink("$id?do=edit&rev=&newpagetemplate=:pagetemplates:$template&newpagevars=$newpagevars");     
+            html_wikilink("$id?do=edit&rev=&newpagetemplate=$template&newpagevars=$newpagevars");     
          }
          return array($state,$match);
     }
