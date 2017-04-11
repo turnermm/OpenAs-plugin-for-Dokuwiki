@@ -31,7 +31,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	    $_REQUEST['saveas_orig']: id of the original page which will be moved or copied to a new name
 	    $_REQUEST['id'] or $INFO['id']: name of the new page
 	*/
-    function openas_preprocess(&$event){
+    function openas_preprocess(Doku_Event $event){
 	   global $INFO;
 	 
          if(isset($_REQUEST['openas'])) {
@@ -215,7 +215,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	 return array();
   }
   
-  function update_locked_pages(&$event) {
+  function update_locked_pages(Doku_Event $event) {
      global $ID;
 	 $locked_array=$this->get_locked_array() ;
 	
