@@ -24,6 +24,8 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
     function connectTo($mode) {
       
         $this->Lexer->addEntryPattern('~~OpenAsVarsStart~~', $mode, 'plugin_openas');
+        $this->Lexer->addPattern('~~OpenAsVar>TAreaOpen~~', $mode, 'plugin_openas');
+        $this->Lexer->addPattern('~~OpenAsVar>TAreaClose~~', $mode, 'plugin_openas');
         $this->Lexer->addPattern('~~OpenAsVAR>.*?~~','plugin_openas');
         $this->Lexer->addSpecialPattern('~~SaveAS>.*?~~',$mode,'plugin_openas');
         $this->Lexer->addSpecialPattern('~~OpenAS>.*?~~',$mode,'plugin_openas');
@@ -87,7 +89,13 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
                    $renderer->doc .=  $text; 
             break;
             case DOKU_LEXER_MATCHED :
-               $renderer->doc .= "<input type='text' size='24' name= '$match'  id ='$match' class='open_as_repl'>&nbsp;\n";
+               if(preg_match('/^TAreaOpen:(.*?)$/',$match,$matches)) { 
+                   $renderer->doc .= "<textarea rows = '4' cols = '50' name = '$matches[1]' id = '$matches[1]' class='open_as_repl'>\n";
+               }
+               else if($match == 'TAreaClose') {
+                   $renderer->doc .= "</textarea>\n";
+               } 
+               else $renderer->doc .= "<input type='text' size='24' name= '$match'  id ='$match' class='open_as_repl'>&nbsp;\n";
                break;
             case DOKU_LEXER_EXIT :  $renderer->doc .= '</form></div>' . "\n";
                    break;
