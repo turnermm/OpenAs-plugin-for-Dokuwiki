@@ -1,2 +1,2 @@
 <?php
-$conf['labels'] = 'none';
+$conf['labels'] = 'bold';

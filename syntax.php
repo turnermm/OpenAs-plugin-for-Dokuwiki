@@ -102,7 +102,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
             break;
             case DOKU_LEXER_MATCHED :
                if(preg_match('/^TAreaOpen:(.*?)$/',$match,$matches)) { 
-                   $renderer->doc .= "<textarea rows = '4' cols = '50' name = '$matches[1]' id = '$matches[1]' class='open_as_repl'>\n";
+                   $renderer->doc .= "<textarea rows = '4' cols = '60' name = '$matches[1]' id = '$matches[1]' class='open_as_repl'>\n";
                }
                else if($match == 'TAreaClose') {
                    $renderer->doc .= "</textarea>\n";
