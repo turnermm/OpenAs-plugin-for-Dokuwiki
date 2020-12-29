@@ -17,7 +17,7 @@ require_once DOKU_PLUGIN.'syntax.php';
  * need to inherit from this class
  */
 class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
-
+    var $labels = array();
     function getType() { return 'substition'; }
     function getSort() { return 60; }
     function getPType() { return 'block'; }
@@ -45,6 +45,17 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
          $file = wikiFN($ID);
          list($type,$name,$newpagevars) = explode('>',(trim($match,'~')));
          $name=trim($name);  
+         $labels = $this->getConf('labels');
+         if($labels == 'none') {
+             $this->labels['open'] = "";
+             $this->labels['close'] = "";      
+         }
+          else {         
+             $labels = trim($labels);
+             $ltype = $labels[0];  
+             $this->labels['open'] = "<$ltype>";
+             $this->labels['close'] = "</$ltype>";
+         }             
     
          switch ($state) {
               case DOKU_LEXER_ENTER : return array($state, '');
@@ -85,6 +96,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
                     break;
             case DOKU_LEXER_UNMATCHED :  
                    $text = $renderer->_xmlEntities($match);
+                   $text = preg_replace('/\*\*(.*?)\*\*/ms', $this->labels['open'] ."$1" .$this->labels['close'] ,$text);
                    $text = preg_replace ("#\s*\\\\\s*#",'<br />',$text);              
                    $renderer->doc .=  $text; 
             break;
@@ -102,7 +114,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_SPECIAL :            
             $class= 'save_as'; 
                 if(preg_match("/SAVEAS_PAGE/i",$match)) {
-                     $id = $this->getLang('pageid');
+                     $id = $this->labels['open'] . $this->getLang('pageid')  .$this->labels['close'] ;
                  $renderer->doc .= '<div class="save_as_info">' . "\n";
                      $renderer->doc .= '<form id="save_as_info">' . $id . ' <input type="text" size="24" name="save_as_page" id ="save_as_page">' . "\n";
                  $renderer->doc .= "</form></div>\n";
