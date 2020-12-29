@@ -14,7 +14,7 @@ jQuery(document).ready(function(){
       jq.attr("href",href);  //   (jQuery("div.save_as_tmpl a.wikilink2").attr("href",href));
      }
      var repl_str = "";
-    jQuery( "input.open_as_repl" ).each( function( index, element ){
+    jQuery( "input.open_as_repl, textarea.open_as_repl" ).each( function( index, element ){
           if(this.value) {              
               repl_str += '@' + this.id + '@,' + this.value + ';'
             }
