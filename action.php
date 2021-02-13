@@ -240,17 +240,19 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
       if(empty($USERINFO)) return false;
    
       //id=tower2&saveas_orig=tower&openas=delete
-      $id = $INPUT->get->str('id');
+      $newid = $INPUT->get->str('id');
       $saveas_orig = $INPUT->get->str('saveas_orig');      
       $action = $INPUT->get->str('openas');  
       if(!$action) return false;
       
-      resolve_pageid(getNS($id), $id, $exists);
-      $id = cleanID($id);
+      resolve_pageid(getNS($newid), $newid, $exists);
+      $newid = cleanID($newid);
+      
       resolve_pageid(getNS($saveas_orig), $saveas_orig, $exists);      
-      $auth_newid = auth_quickaclcheck($id);
+      $auth_newid = auth_quickaclcheck($newid);     
       $auth_origid = auth_quickaclcheck($saveas_orig); 
-      msg('new ' . $auth_newid);
+      msg("$action original page:  $saveas_orig //" . $auth_origid);
+      msg("new page: $newid //". $auth_newid );
        switch($action) {
            case 'delete':                               
                if($auth_origid < AUTH_DELETE) {
@@ -258,19 +260,21 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
                    return false;
                }
                 if($auth_newid < AUTH_CREATE) {
-                    msg("you do not have permission to create: $auth_newid");
+                    msg("you do not have permission to create: $id");
                     return false;
                 }                    
+                return true;                
                break;
            case 'save':
-               msg('save: ' .$auth_origid);
               if($auth_newid < AUTH_CREATE) {
-                   msg("you do not have permission to create: $auth_newid");
+                   msg("you do not have permission to create: $newid");
                   return false;
               }
-              if($auth_origid < AUTH_EDIT) return false;
-              
-               break;
+              if($auth_origid < AUTH_EDIT) {
+                  msg("You need edit permission to copy this page");
+                  return false;   
+              }            
+               return true;
            default:
                return true;
        }
