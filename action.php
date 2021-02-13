@@ -33,6 +33,7 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	*/
     function openas_preprocess(Doku_Event $event){
 	   global $INFO;
+         if(!$this->check_url()) return;
 	 
          if(isset($_REQUEST['openas'])) {
               $new_file = wikiFN($INFO['id']); 
@@ -234,6 +235,48 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
 	 
   }
   
+  function check_url() {
+      global $INPUT,$USERINFO;
+      if(empty($USERINFO)) return false;
+   
+      //id=tower2&saveas_orig=tower&openas=delete
+      $id = $INPUT->get->str('id');
+      $saveas_orig = $INPUT->get->str('saveas_orig');      
+      $action = $INPUT->get->str('openas');  
+      if(!$action) return false;
+      
+      resolve_pageid(getNS($id), $id, $exists);
+      $id = cleanID($id);
+      resolve_pageid(getNS($saveas_orig), $saveas_orig, $exists);      
+      $auth_newid = auth_quickaclcheck($id);
+      $auth_origid = auth_quickaclcheck($saveas_orig); 
+      msg('new ' . $auth_newid);
+       switch($action) {
+           case 'delete':                               
+               if($auth_origid < AUTH_DELETE) {
+                   msg("you do not have permission to delete: $saveas_orig");
+                   return false;
+               }
+                if($auth_newid < AUTH_CREATE) {
+                    msg("you do not have permission to create: $auth_newid");
+                    return false;
+                }                    
+               break;
+           case 'save':
+               msg('save: ' .$auth_origid);
+              if($auth_newid < AUTH_CREATE) {
+                   msg("you do not have permission to create: $auth_newid");
+                  return false;
+              }
+              if($auth_origid < AUTH_EDIT) return false;
+              
+               break;
+           default:
+               return true;
+       }
+       return false;
+  } 
+    
   function write_debug($what,$pre=false) {  
      if(is_array($what)) $what = print_r($what,true);
      if($pre) {
