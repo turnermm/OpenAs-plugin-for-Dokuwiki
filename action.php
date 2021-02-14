@@ -34,9 +34,9 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
     function openas_preprocess(Doku_Event $event){
 	   global $INFO;
          if(!$this->check_url()) return;
-	 
+ 
          if(isset($_REQUEST['openas'])) {
-              $new_file = wikiFN($INFO['id']); 
+            $new_file = wikiFN($INFO['id']); 
             if(file_exists($new_file) && isset($_REQUEST['saveas_orig'])) {	
                  // handle relative links for both save and move		  
                   $this->update_relative_links($_REQUEST['id'],$_REQUEST['saveas_orig']) ;			  
@@ -237,48 +237,60 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
   
   function check_url() {
       global $INPUT,$USERINFO;
-      if(empty($USERINFO)) return false;
-   
+      if(empty($USERINFO)) {         
+         // header("Location: https://www.abc123xyz.loco/abc.html"); /* Redirect browser */       
+          return false;
+      } 
       //id=tower2&saveas_orig=tower&openas=delete
       $newid = $INPUT->get->str('id');
       $saveas_orig = $INPUT->get->str('saveas_orig');      
-      $action = $INPUT->get->str('openas');  
+      $action = $INPUT->get->str('openas'); 
       if(!$action) return false;
-      
+    
       resolve_pageid(getNS($newid), $newid, $exists);
       $newid = cleanID($newid);
+      $auth_newid = auth_quickaclcheck($newid); 
       
-      resolve_pageid(getNS($saveas_orig), $saveas_orig, $exists);      
-      $auth_newid = auth_quickaclcheck($newid);     
+      resolve_pageid(getNS($saveas_orig), $saveas_orig, $exists); 
+      cleanID($saveas_orig);       
       $auth_origid = auth_quickaclcheck($saveas_orig); 
-      msg("$action original page:  $saveas_orig //" . $auth_origid);
-      msg("new page: $newid //". $auth_newid );
-       switch($action) {
-           case 'delete':                               
-               if($auth_origid < AUTH_DELETE) {
-                   msg("you do not have permission to delete: $saveas_orig");
-                   return false;
-               }
-                if($auth_newid < AUTH_CREATE) {
-                    msg("you do not have permission to create: $id");
-                    return false;
-                }                    
-                return true;                
-               break;
-           case 'save':
-              if($auth_newid < AUTH_CREATE) {
-                   msg("you do not have permission to create: $newid");
-                  return false;
-              }
-              if($auth_origid < AUTH_EDIT) {
-                  msg("You need edit permission to copy this page");
-                  return false;   
-              }            
-               return true;
-           default:
-               return true;
-       }
-       return false;
+      
+     // msg("$action original page:  $saveas_orig // " . $auth_origid);
+     // msg("new page: $newid //". $auth_newid );
+
+     switch($action)
+     {
+        case 'delete':                               
+           if($auth_origid < AUTH_EDIT) {
+               $nodel = $this->getLang('nodelete');
+               msg("1. $nodel $saveas_orig");
+               return false;
+           }
+            if($auth_newid < AUTH_CREATE) {
+                $nocreate = $this->getLang('nocreate');
+                msg("2. $nocreate $id");
+                return false;
+            }                                  
+           return true;
+           
+        case 'save':
+           if($auth_newid < AUTH_CREATE) {
+               $nocreate = $this->getLang('nocreate');
+               msg("3. $nocreate $newid");
+               return false;
+          }
+          if($auth_origid < AUTH_EDIT) {
+             $nocopy = $this->getLang('nocopy');                 
+              msg("4. $nocopy $saveas_orig");
+              return false;   
+          }            
+           return true;
+           
+        default:
+           return false;
+     }
+     
+     return false;
   } 
     
   function write_debug($what,$pre=false) {  
