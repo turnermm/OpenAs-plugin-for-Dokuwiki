@@ -237,9 +237,17 @@ class action_plugin_openas extends DokuWiki_Action_Plugin {
   
   function check_url() {
       global $INPUT,$USERINFO;
-      if(empty($USERINFO)) {         
-         // header("Location: https://www.abc123xyz.loco/abc.html"); /* Redirect browser */       
-          return false;
+      
+      if(empty($USERINFO)) {    
+          $action = $INPUT->get->str('openas');
+          if($action) {
+              $db = DOKU_BASE;     
+              $default =  "${db}lib/plugins/openas/images/404.jpg";
+              $fourOhfour = $this->getConf("404");
+              if(!$fourOhfour) $fourOhfour = $default;
+              header("Location: $fourOhfour"); /* Redirect browser */          
+              return false;
+          }
       } 
       //id=tower2&saveas_orig=tower&openas=delete
       $newid = $INPUT->get->str('id');
