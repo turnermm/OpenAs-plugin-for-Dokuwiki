@@ -27,6 +27,7 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addPattern('~~OpenAsVar>TAreaOpen~~', $mode, 'plugin_openas');
         $this->Lexer->addPattern('~~OpenAsVar>TAreaClose~~', $mode, 'plugin_openas');
         $this->Lexer->addPattern('~~OpenAsVAR>.*?~~','plugin_openas');
+        $this->Lexer->addPattern('~~OpenAsNUM>.*?~~','plugin_openas');        
         $this->Lexer->addSpecialPattern('~~SaveAS>.*?~~',$mode,'plugin_openas');
         $this->Lexer->addSpecialPattern('~~OpenAS>.*?~~',$mode,'plugin_openas');
         $this->Lexer->addSpecialPattern('~~MoveTO>.*?~~',$mode,'plugin_openas');
@@ -61,6 +62,9 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
               case DOKU_LEXER_ENTER : return array($state, '');
               case DOKU_LEXER_UNMATCHED :  return array($state, $match);
               case DOKU_LEXER_MATCHED :           
+                  if($type == 'OpenAsNUM') {
+                      return array($state,"$type:$name"); 
+                 }             
                       return array($state, $name);
               case DOKU_LEXER_EXIT :       return array($state, '');
               case DOKU_LEXER_SPECIAL :
@@ -107,7 +111,14 @@ class syntax_plugin_openas extends DokuWiki_Syntax_Plugin {
                else if($match == 'TAreaClose') {
                    $renderer->doc .= "</textarea>\n";
                } 
-               else $renderer->doc .= "<input type='text' size='24' name= '$match'  id ='$match' class='open_as_repl'>&nbsp;\n";
+               else {
+                   $size = "24";                 
+                   if(preg_match("/^OpenAsNUM:(.*?)$/",$match,$matches)) {
+                       $match = $matches[1];  
+                       $size = "10";
+                   }                 
+                   $renderer->doc .= "<input type='text' size='$size' name= '$match'  id ='$match' class='open_as_repl'>&nbsp;\n";
+                }   
                break;
             case DOKU_LEXER_EXIT :  $renderer->doc .= '</form></div>' . "\n";
                    break;
