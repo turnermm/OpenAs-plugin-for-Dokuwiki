@@ -1,6 +1,4 @@
-
-jQuery(document).ready(function(){
-   
+jQuery (function() {   
     jQuery("div.save_as_tmpl a.wikilink2").click(function(){
        var jq = jQuery(this);
        var href = jq.attr('href');    
@@ -27,7 +25,5 @@ jQuery(document).ready(function(){
         }
             
     });
-    
-
     
 });
